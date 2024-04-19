@@ -1,58 +1,68 @@
-import FontAwesome from '@expo/vector-icons/FontAwesome';
+import WriteButton from '@/components/ui/WriteButton';
+import Colors from '@/constants/Colors';
+import { Entypo, Feather } from '@expo/vector-icons';
 import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
 import { useFonts } from 'expo-font';
-import { Stack } from 'expo-router';
-import * as SplashScreen from 'expo-splash-screen';
-import { useEffect } from 'react';
+import { SafeAreaView, StatusBar, StyleSheet, View, useColorScheme } from 'react-native';
+import Text from '@/components/ui/text';
 
-import { useColorScheme } from '@/components/useColorScheme';
+export default function layout() {
+  const colorScheme = useColorScheme();
 
-export {
-  // Catch any errors thrown by the Layout component.
-  ErrorBoundary,
-} from 'expo-router';
-
-export const unstable_settings = {
-  // Ensure that reloading on `/modal` keeps a back button present.
-  initialRouteName: '(tabs)',
-};
-
-// Prevent the splash screen from auto-hiding before asset loading is complete.
-SplashScreen.preventAutoHideAsync();
-
-export default function RootLayout() {
-  const [loaded, error] = useFonts({
-    SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
-    ...FontAwesome.font,
+  const [fontsLoaded] = useFonts({
+    'Vazirmatn-Light': require('../assets/fonts/Vazirmatn-Light.ttf'),
+    'Vazirmatn-Regular': require('../assets/fonts/Vazirmatn-Regular.ttf'),
+    'Vazirmatn-Medium': require('../assets/fonts/Vazirmatn-Medium.ttf'),
+    'Vazirmatn-SemiBold': require('../assets/fonts/Vazirmatn-SemiBold.ttf'),
+    'Vazirmatn-Bold': require('../assets/fonts/Vazirmatn-Bold.ttf'),
   });
 
-  // Expo Router uses Error Boundaries to catch errors in the navigation tree.
-  useEffect(() => {
-    if (error) throw error;
-  }, [error]);
-
-  useEffect(() => {
-    if (loaded) {
-      SplashScreen.hideAsync();
-    }
-  }, [loaded]);
-
-  if (!loaded) {
+  if (!fontsLoaded) {
+    // Font is not yet loaded, return a loading indicator or null
     return null;
   }
 
-  return <RootLayoutNav />;
-}
-
-function RootLayoutNav() {
-  const colorScheme = useColorScheme();
-
   return (
     <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      <Stack>
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen name="modal" options={{ presentation: 'modal' }} />
-      </Stack>
+      <SafeAreaView style={[styles.container, { backgroundColor: Colors[colorScheme ?? 'light'].background }]}>
+        <Text style={styles.title} theme={colorScheme ?? 'light'}>یادداشت های من</Text>
+        <View style={styles.navBar}>
+          <Feather name="menu" size={24} color={Colors[colorScheme ?? 'light'].text} />
+          <View style={styles.flex}>
+            <Feather name="search" size={24} color={Colors[colorScheme ?? 'light'].text} />
+            <Entypo name="dots-three-vertical" size={24} color={Colors[colorScheme ?? 'light'].text} />
+          </View>
+        </View>
+        <WriteButton />
+      </SafeAreaView>
     </ThemeProvider>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    paddingHorizontal: 15,
+    position: 'relative',
+    flex: 1,
+    flexDirection: "column"
+  },
+  title: {
+    fontFamily: 'Vazirmatn-Medium',
+    fontSize: 30,
+    marginTop: 50,
+    textAlign: 'center'
+  },
+  navBar: {
+    marginVertical: 30,
+    marginHorizontal: 20,
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center'
+  },
+  flex: {
+    display: 'flex',
+    flexDirection: 'row',
+    gap: 10,
+  }
+});
