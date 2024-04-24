@@ -1,18 +1,18 @@
 import Colors from '@/constants/Colors';
 import { Entypo } from '@expo/vector-icons';
-import { Link } from 'expo-router';
 import React from 'react';
 import { StyleSheet, TouchableOpacity, useColorScheme } from 'react-native';
 
+interface FloatingButtonProps {
+  onClick: void;
+}
 
-export default function WriteButton() {
+export default function FloatingButton({ onClick}: FloatingButtonProps) {
   const colorScheme = useColorScheme();
 
   return (
-    <TouchableOpacity style={[styles.floating, { backgroundColor: Colors[colorScheme ?? 'light'].tint }]}>
-      <Link href='/write/'>
-        <Entypo name="plus" color={Colors[colorScheme ?? 'light'].foreground} size={32} />
-      </Link>
+    <TouchableOpacity style={[styles.floating, { backgroundColor: Colors[colorScheme ?? 'light'].tint }] onPress={onClick}>
+      <Entypo name="plus" color={Colors[colorScheme ?? 'light'].foreground} size={32} />
     </TouchableOpacity>
   );
 }

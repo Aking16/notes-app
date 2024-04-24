@@ -1,25 +1,13 @@
 import Text from '@/components/ui/Text';
-import WriteButton from '@/components/ui/WriteButton';
 import Colors from '@/constants/Colors';
 import { Entypo, Feather } from '@expo/vector-icons';
 import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
 import { useFonts } from 'expo-font';
 import { Slot } from 'expo-router';
-import { useEffect } from 'react';
-import { Linking, SafeAreaView, StyleSheet, View, useColorScheme } from 'react-native';
+import { SafeAreaView, StyleSheet, View, useColorScheme } from 'react-native';
 
 export default function layout() {
   const colorScheme = useColorScheme();
-
-  useEffect(() => {
-    // Add event listener to handle incoming URLs
-    const handleUrl = ({ url }) => {
-      console.log('Incoming URL:', url);
-      // Handle the URL as needed
-    };
-
-    Linking.addEventListener('url', handleUrl);
-  }, []);
 
   const [fontsLoaded] = useFonts({
     'Vazirmatn-Light': require('../assets/fonts/Vazirmatn-Light.ttf'),
@@ -46,7 +34,6 @@ export default function layout() {
           </View>
         </View>
         <Slot />
-        <WriteButton />
       </SafeAreaView>
     </ThemeProvider>
   );
