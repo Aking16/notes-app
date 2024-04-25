@@ -1,18 +1,18 @@
 import Colors from '@/constants/Colors';
 import { Entypo } from '@expo/vector-icons';
 import React from 'react';
-import { StyleSheet, TouchableOpacity, useColorScheme } from 'react-native';
+import { StyleSheet, TouchableOpacity, TouchableOpacityProps, useColorScheme } from 'react-native';
 
-interface FloatingButtonProps {
-  onClick: void;
+interface FloatingButtonProps extends TouchableOpacityProps {
+  icon: any;
 }
 
-export default function FloatingButton({ onClick}: FloatingButtonProps) {
+export default function FloatingButton({icon, ...props}: FloatingButtonProps) {
   const colorScheme = useColorScheme();
 
   return (
-    <TouchableOpacity style={[styles.floating, { backgroundColor: Colors[colorScheme ?? 'light'].tint }] onPress={onClick}>
-      <Entypo name="plus" color={Colors[colorScheme ?? 'light'].foreground} size={32} />
+    <TouchableOpacity style={[styles.floating, { backgroundColor: Colors[colorScheme ?? 'light'].tint }]} {...props}>
+      <Entypo name={icon} color={Colors[colorScheme ?? 'light'].foreground} size={32} />
     </TouchableOpacity>
   );
 }
