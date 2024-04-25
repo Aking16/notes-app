@@ -44,7 +44,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: 15,
     position: 'relative',
     flex: 1,
-    flexDirection: "column"
+    flexDirection: "column",
+    direction: "rtl"
   },
   title: {
     fontFamily: 'Vazirmatn-Medium',

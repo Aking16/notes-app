@@ -1,15 +1,16 @@
 import Colors from '@/constants/Colors';
-import React from 'react';
+import React, { ForwardedRef } from 'react';
 import { TextInput as DefaultTextInput, TextInputProps } from 'react-native';
 
 interface ThemeProps extends TextInputProps {
   theme: string;
+  forwardRef?: ForwardedRef<any>;
 };
 
-export default function TextInput({ style, theme, ...otherProps }: ThemeProps) {
-  const inputColor = theme === 'light' ? Colors.light.input : Colors.dark.input;
+export default function TextInput({ style, theme, forwardRef, ...otherProps }: ThemeProps) {
+  const textColor = theme === 'light' ? Colors.light.text : Colors.dark.text;
 
   return (
-    <DefaultTextInput style={[{ backgroundColor: inputColor }, style]} {...otherProps} />
+    <DefaultTextInput ref={forwardRef} style={[{ color: textColor }, style]} {...otherProps} />
   );
 }
