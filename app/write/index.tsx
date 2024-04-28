@@ -1,30 +1,59 @@
 import FloatingButton from '@/components/ui/FloatingButton';
+import Text from '@/components/ui/Text';
 import TextInput from '@/components/ui/TextInput';
-import React, { useRef, useState } from 'react';
-import { StyleSheet, View, useColorScheme } from 'react-native';
+import { FontAwesome5 } from '@expo/vector-icons';
+import React, { useCallback, useRef, useState } from 'react';
+import { ScrollView, StyleSheet, View, useColorScheme } from 'react-native';
 import { RichEditor, RichToolbar, actions } from 'react-native-pell-rich-editor';
+
+const boldIcon = ({ tintColor }: any) => <FontAwesome5 name="bold" size={24} color={tintColor} />;
+const underlineIcon = ({ tintColor }: any) => <FontAwesome5 name="underline" size={24} color={tintColor} />;
+const italicIcon = ({ tintColor }: any) => <FontAwesome5 name="italic" size={24} color={tintColor} />;
+const strikeIcon = ({ tintColor }: any) => <FontAwesome5 name="strikethrough" size={24} color={tintColor} />;
+const bulletListIcon = ({ tintColor }: any) => <FontAwesome5 name="list-ul" size={24} color={tintColor} />;
+const orderedListIcon = ({ tintColor }: any) => <FontAwesome5 name="list-ol" size={24} color={tintColor} />;
+const linkIcon = ({ tintColor }: any) => <FontAwesome5 name="link" size={24} color={tintColor} />;
+const undoIcon = ({ tintColor }: any) => <FontAwesome5 name="undo" size={24} color={tintColor} />;
+const redoIcon = ({ tintColor }: any) => <FontAwesome5 name="redo" size={24} color={tintColor} />;
 
 export default function index() {
   const colorScheme = useColorScheme();
   const richText = useRef<any>();
+  const scrollRef = useRef<ScrollView>(null);
+
+  const handleCursorPosition = useCallback((scrollY: number) => {
+    scrollRef.current!.scrollTo({ y: scrollY - 30, animated: true });
+  }, []);
 
   return (
     <View style={styles.container}>
       <RichToolbar
+        style={styles.navbar}
         editor={richText}
         selectedIconTint="#873c1e"
         iconTint="#312921"
         actions={[
-          actions.insertImage,
           actions.setBold,
+          actions.setUnderline,
           actions.setItalic,
+          actions.setStrikethrough,
           actions.insertBulletsList,
           actions.insertOrderedList,
           actions.insertLink,
-          actions.setStrikethrough,
-          actions.setUnderline,
+          actions.undo,
+          actions.redo
         ]}
-        style={styles.navbar}
+        iconMap={{
+          [actions.setBold]: boldIcon,
+          [actions.setUnderline]: underlineIcon,
+          [actions.setItalic]: italicIcon,
+          [actions.setStrikethrough]: strikeIcon,
+          [actions.insertBulletsList]: bulletListIcon,
+          [actions.insertOrderedList]: orderedListIcon,
+          [actions.insertLink]: linkIcon,
+          [actions.undo]: undoIcon,
+          [actions.redo]: redoIcon,
+        }}
       />
       <View style={styles.textContainer}>
         <View style={styles.title}>
@@ -32,12 +61,18 @@ export default function index() {
           <TextInput theme={colorScheme ?? "light"} placeholder="تاریخ" />
         </View>
         <View style={styles.hr} />
-        {/* <TextInput theme={colorScheme ?? "light"} textAlign="right" placeholder="یادداشت کن" multiline forwardRef={textInputRef} value={text} onChangeText={setText} onSelectionChange={handleSelectionChange} /> */}
-        <RichEditor
-          ref={richText}
-          placeholder="یادداشت کن"
-          androidHardwareAccelerationDisabled={true}
-        />
+        <ScrollView
+          keyboardDismissMode={'none'}
+          ref={scrollRef}
+          nestedScrollEnabled={true}
+          scrollEventThrottle={20}>
+          <RichEditor
+            ref={richText}
+            placeholder="یادداشت کن"
+            androidHardwareAccelerationDisabled={true}
+            onCursorPosition={handleCursorPosition}
+          />
+        </ScrollView>
       </View>
       <FloatingButton icon="check" onPress={() => console.log("clicked")} />
     </View>
@@ -53,14 +88,13 @@ const styles = StyleSheet.create({
   textContainer: {
     paddingHorizontal: 15,
     marginBottom: 30,
-    paddingBottom: 60,
+    paddingBottom: 10,
     flex: 1,
     flexDirection: "column",
     backgroundColor: "white",
     borderRadius: 15,
   },
   navbar: {
-    padding: 15,
     marginVertical: 10,
     backgroundColor: "white",
     borderRadius: 15,
@@ -75,7 +109,4 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     marginVertical: 10,
   },
-  textInput: {
-
-  }
 });

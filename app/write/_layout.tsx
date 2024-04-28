@@ -1,33 +1,33 @@
-import FloatingButton from '@/components/ui/FloatingButton';
-import Text from '@/components/ui/Text';
+import TextInput from '@/components/ui/TextInput';
 import Colors from '@/constants/Colors';
 import { Entypo, Feather } from '@expo/vector-icons';
-import { useRouter } from 'expo-router';
+import { Link, Slot } from 'expo-router';
 import React from 'react';
-import { StyleSheet, View, useColorScheme } from 'react-native';
+import { SafeAreaView, StatusBar, StyleSheet, View, useColorScheme } from 'react-native';
 
-export default function index() {
+export default function _layout() {
   const colorScheme = useColorScheme();
-  const router = useRouter();
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title} theme={colorScheme ?? 'light'}>یادداشت های من</Text>
+    <SafeAreaView style={styles.container}>
       <View style={styles.navBar}>
-        <Feather name="menu" size={24} color={Colors[colorScheme ?? 'light'].text} />
+        <Link href="/">
+          <Feather name="arrow-left" size={24} color={Colors[colorScheme ?? 'light'].text} />
+          <TextInput theme={colorScheme ?? "light"} placeholder="موضوع" style={[{width: 100,backgroundColor: "blue", marginTop: StatusBar.currentHeight}]}/>
+        </Link>
         <View style={styles.flex}>
           <Feather name="search" size={24} color={Colors[colorScheme ?? 'light'].text} />
           <Entypo name="dots-three-vertical" size={24} color={Colors[colorScheme ?? 'light'].text} />
         </View>
       </View>
-      <Text theme={colorScheme ?? 'light'}>index</Text>
-      <FloatingButton icon="plus" onPress={() => router.push("/write/")} />
-    </View>
+      <Slot />
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
+    position: 'relative',
     flex: 1,
     flexDirection: "column",
     direction: "rtl"
@@ -39,8 +39,8 @@ const styles = StyleSheet.create({
     textAlign: 'center'
   },
   navBar: {
-    marginVertical: 30,
-    marginHorizontal: 20,
+    marginTop: StatusBar.currentHeight! + 10,
+    marginBottom: 10,
     display: 'flex',
     flexDirection: 'row',
     justifyContent: 'space-between',
