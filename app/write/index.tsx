@@ -1,8 +1,9 @@
 import FloatingButton from '@/components/ui/FloatingButton';
 import Text from '@/components/ui/Text';
 import TextInput from '@/components/ui/TextInput';
+import openDatabase from '@/libs/database';
 import { FontAwesome5 } from '@expo/vector-icons';
-import React, { useCallback, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { ScrollView, StyleSheet, View, useColorScheme } from 'react-native';
 import { RichEditor, RichToolbar, actions } from 'react-native-pell-rich-editor';
 
@@ -17,9 +18,30 @@ const undoIcon = ({ tintColor }: any) => <FontAwesome5 name="undo" size={24} col
 const redoIcon = ({ tintColor }: any) => <FontAwesome5 name="redo" size={24} color={tintColor} />;
 
 export default function index() {
+  const db = openDatabase();
   const colorScheme = useColorScheme();
   const richText = useRef<any>();
   const scrollRef = useRef<ScrollView>(null);
+  const [text, setText] = useState("");
+
+  useEffect(() => {
+    db.transaction((tx) => {
+      tx.executeSql(
+        "create table if not exists items (id integer primary key not null, done int, value text);"
+      );
+    });
+  }, []);
+
+  function add () {
+    db.transaction(
+      (tx) => {
+        tx.executeSql("insert into items (done, value) values (0, ?)", [text]);
+        tx.executeSql("select * from items", [], (_, { rows }) =>
+          console.log(JSON.stringify(rows))
+        );
+      },
+    );
+  }
 
   const handleCursorPosition = useCallback((scrollY: number) => {
     scrollRef.current!.scrollTo({ y: scrollY - 30, animated: true });
@@ -67,6 +89,7 @@ export default function index() {
           nestedScrollEnabled={true}
           scrollEventThrottle={20}>
           <RichEditor
+            onChange={(value) => setText(value)}
             ref={richText}
             placeholder="یادداشت کن"
             androidHardwareAccelerationDisabled={true}
@@ -74,7 +97,7 @@ export default function index() {
           />
         </ScrollView>
       </View>
-      <FloatingButton icon="check" onPress={() => console.log("clicked")} />
+      <FloatingButton icon="check" onPress={() => add()} />
     </View>
   );
 }
